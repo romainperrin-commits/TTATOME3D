@@ -301,7 +301,7 @@
       }
     }
 
-  function openInStore(event) {
+    function openInStore(event) {
       const ua = navigator.userAgent || navigator.vendor || window.opera;
       const isAndroid = /android/i.test(ua);
       const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
@@ -313,29 +313,31 @@
       }
 
       // --- 2. MOBILE APP BREAKOUT ---
-      event.preventDefault(); // Stop the app's internal navigator
+      event.preventDefault(); // Stop the Atome3D app's internal navigator
 
       if (isAndroid) {
-        // market:// triggers the Play Store App directly
-        // replace 'com.tigertag.app' with the actual Package ID of Tigertag
-        window.location.href = "market://details?id=com.tigertag.app"; 
-        
-        // Fallback if market:// fails (opens Chrome)
-        setTimeout(() => {
-          window.location.href = "https://play.google.com/store/apps/details?id=com.tigertag.app";
-        }, 250);
+        // Triggers the Play Store App directly
+        // Using a general intent for Android to ensure it leaves the WebView
+        const playStoreUrl = "https://play.google.com/store/apps/details?id=com.tigertag.app";
+        window.location.href = `intent://${playStoreUrl.replace(/^https?:\/\//, '')}#Intent;scheme=https;action=android.intent.action.VIEW;end`;
       } 
       else if (isIOS) {
         // itms-apps:// triggers the Apple App Store App directly
-        // replace '123456789' with the actual Apple ID of Tigertag
-        window.location.href = "itms-apps://itunes.apple.com/app/id6745437963";
+        // Using the ID from your provided link: 6745437963
+        const appStoreAppUrl = "itms-apps://apps.apple.com/app/id6745437963";
+        const appStoreWebUrl = "https://apps.apple.com/fr/app/tigertag-rfid-connect/id6745437963";
+
+        // Try to open the Store App first
+        window.location.href = appStoreAppUrl;
         
-        // Fallback if itms-apps fails (opens Safari)
+        // Fallback: If it doesn't redirect in 250ms, try the web URL in Safari
         setTimeout(() => {
-          window.location.href = "https://apps.apple.com/app/id6745437963";
+          window.open(appStoreWebUrl, '_system');
         }, 250);
       }
     }
+
+
   
     function openInExternalBrowser(event, url) {
     const ua = navigator.userAgent || navigator.vendor || window.opera;
