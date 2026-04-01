@@ -255,6 +255,7 @@
         <a
           class="button-link button-link--download"
           href="https://taap.it/DF1Aqt"
+          onclick="forceExternal(event, this.href)"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Telecharger Tigertag"
@@ -297,6 +298,18 @@
         await element.requestFullscreen();
       } catch (error) {
         console.error("Impossible de passer la video en plein ecran.", error);
+      }
+    }
+
+    function forceExternal(event, url) {
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        event.preventDefault();
+        window.open(url, '_system'); 
+        setTimeout(() => {
+          window.location.href = url;
+        }, 100);
       }
     }
 
