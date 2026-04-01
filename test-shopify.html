@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Shopify Simulator - Debug Mode</title>
+  <style>
+    /* Mimic your Shopify Page Code */
+    html, body { height: 100%; margin: 0; overflow: hidden; background: #222; }
+
+    /* SIMULATED SHOPIFY HEADER - This is likely your culprit */
+    /* We make it red and semi-transparent so you can see if it covers the video */
+    .shopify-header-simulator {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 80px; /* Adjust this height to match your live Shopify header */
+      background: rgba(255, 0, 0, 0.3); 
+      border-bottom: 2px solid red;
+      z-index: 10000; /* Higher than your iframe wrapper */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      pointer-events: auto; /* It captures clicks! */
+    }
+
+    .iframe-wrapper {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      background: #000;
+      z-index: 9999;
+    }
+
+    iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="shopify-header-simulator">
+    SIMULATED INVISIBLE BLOCKER (HEADER)
+  </div>
+
+  <div class="iframe-wrapper">
+    <iframe 
+      src="index.html" 
+      allow="autoplay; fullscreen; gamepad" 
+      allowfullscreen>
+    </iframe>
+  </div>
+
+</body>
+</html>
