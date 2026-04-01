@@ -302,14 +302,12 @@
     }
 
   function openInExternalBrowser(event, url) {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    const isAndroid = /android/i.test(userAgent);
-    const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
-    const isMobile = isAndroid || isIOS;
-    if (!isMobile) {
-      return;
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+    const isAndroid = /android/i.test(ua);
+    const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+    if (!isAndroid && !isIOS) {
+      return; 
     }
-
     event.preventDefault();
 
     if (isAndroid) {
@@ -324,7 +322,7 @@
     }
   }
 
-    async function handleCloseAction() {
+  async function handleCloseAction() {
       if (document.fullscreenElement) {
         try {
           await document.exitFullscreen();
