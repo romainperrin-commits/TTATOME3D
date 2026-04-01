@@ -53,10 +53,7 @@
       isolation: isolate;
     }
 
-    .overlay {
-      position: absolute;
-      inset: 0;
-    }
+    
 
     .close-button {
       position: fixed;
@@ -190,6 +187,7 @@
       }
 
       .close-button {
+        pointer-events: auto;
         top: max(10px, env(safe-area-inset-top));
         left: max(10px, env(safe-area-inset-left));
       }
