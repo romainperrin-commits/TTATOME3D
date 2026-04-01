@@ -301,43 +301,53 @@
       }
     }
 
-   
   function handleDownload(event) {
-    const ua = navigator.userAgent.toLowerCase();
-    const platform = navigator.platform.toLowerCase();
-    const link = event.currentTarget;
+      const ua = navigator.userAgent.toLowerCase();
+      const platform = navigator.platform.toLowerCase();
+      const link = event.currentTarget;
 
+      const isAndroid = /android/i.test(ua);
+      const isIOS = /ipad|iphone|ipod/.test(ua);
 
-    const isAndroid = /android/i.test(ua);
-    const isIOS = /ipad|iphone|ipod/.test(ua);
+      // --- 1. ANDROID APP BREAKOUT ---
+      if (isAndroid) {
+        event.preventDefault();
+        // The 'intent://' scheme is a "hard" command to open Chrome or the Play Store
+        const playStoreUrl = "https://play.google.com/store/apps/details?id=com.tigertag.connect&hl=fr";
+        window.location.href = `intent://${playStoreUrl.replace(/^https?:\/\//, '')}#Intent;scheme=https;action=android.intent.action.VIEW;end`;
+        return;
+      } 
 
-    if (isAndroid) {
+      // --- 2. IOS APP BREAKOUT (iPhone/iPad) ---
+      if (isIOS) {
+        event.preventDefault();
+        // 'itms-apps://' is the ONLY way to force an App to open the real App Store
+        const appStoreScheme = "itms-apps://apps.apple.com/app/id6745437963";
+        const appStoreWeb = "https://apps.apple.com/fr/app/tigertag-rfid-connect/id6745437963";
 
-      event.preventDefault();
-      window.location.href = "https://play.google.com/store/apps/details?id=com.tigertag.connect&hl=fr";
-      return;
-    } 
+        // Attempt 1: Force open the App Store App
+        window.location.href = appStoreScheme;
 
-    if (isIOS) {
-      link.href = "https://apps.apple.com/fr/app/tigertag-rfid-connect/id6745437963";
-      return;
-    }
+        // Attempt 2: Fallback to Web Safari if the app is stubborn (after 300ms)
+        setTimeout(() => {
+          window.open(appStoreWeb, '_system');
+        }, 300);
+        return;
+      }
 
-    const isMac = platform.includes('mac');
-    const isWindows = platform.includes('win');
+      // --- 3. PC / DESKTOP LOGIC ---
+      const isMac = platform.includes('mac');
+      const isWindows = platform.includes('win');
 
-    if (isWindows) {
-      link.href = "https://play.google.com/store/apps/details?id=com.tigertag.connect&hl=fr";
-    } 
-    else if (isMac) {
-      link.href = "https://apps.apple.com/fr/app/tigertag-rfid-connect/id6745437963";
-    } 
-    else {
-      link.href = "https://tigertag.io/pages/apps";
-    }
-  }
-
-
+      if (isWindows) {
+        link.href = "https://play.google.com/store/apps/details?id=com.tigertag.connect&hl=fr";
+      } else if (isMac) {
+        link.href = "https://apps.apple.com/fr/app/tigertag-rfid-connect/id6745437963";
+      } else {
+        link.href = "https://tigertag.io/pages/apps";
+      }
+    }  
+   
   async function handleCloseAction() {
       if (document.fullscreenElement) {
         try {
