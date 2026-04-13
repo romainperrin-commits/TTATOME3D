@@ -252,15 +252,14 @@
           </video>
         </section>
 
-        <a
+         <a
           class="button-link button-link--download"
-          href="https://taap.it/DF1Aqt"
-          onclick="forceExternal(event, this.href)"
+          href="https://tigertag.io/pages/apps"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Telecharger Tigertag"
+          aria-label="Telecharger la bêta"
         >
-          Telecharger Tigertag
+          Telecharger la bêta
         </a>
 
         <a
@@ -275,12 +274,13 @@
 
         <a
           class="button-link button-link--beta"
-          href="https://tigertag.io/pages/apps"
+          href="#"
+          onclick="handleDownload(event)"
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Telecharger la bêta"
+          aria-label="Telecharger Tigertag"
         >
-          Telecharger la bêta
+          Télécharger Tigertag
         </a>
       </div>
     </section>
@@ -301,19 +301,41 @@
       }
     }
 
-    function forceExternal(event, url) {
-      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-      
-      if (isMobile) {
-        event.preventDefault();
-        window.open(url, '_system'); 
-        setTimeout(() => {
-          window.location.href = url;
-        }, 100);
+  function handleDownload(event) {
+      const ua = navigator.userAgent.toLowerCase();
+      const isAndroid = /android/i.test(ua);
+      const isIOS = /ipad|iphone|ipod/.test(ua);
+
+      // --- MOBILE APP BREAKOUT ---
+      if (isAndroid || isIOS) {
+        event.preventDefault(); // Stop the app from trying to handle the click internally
+        
+        const storeUrl = isAndroid 
+          ? "https://play.google.com/store/apps/details?id=com.tigertag.connect&hl=fr"
+          : "https://apps.apple.com/fr/app/tigertag-rfid-connect/id6745437963";
+
+        // 1. Try to open via window.open with a blank target. 
+        // In many WebViews, this forces the OS to take over.
+        const newWindow = window.open(storeUrl, '_blank');
+
+        // 2. If it's still stuck, try the "location change" as a backup
+        if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+          window.location.href = storeUrl;
+        }
+        return;
+      }
+
+      // --- PC / DESKTOP (Already working) ---
+      const platform = navigator.platform.toLowerCase();
+      const link = event.currentTarget;
+      if (platform.includes('win')) {
+        link.href = "https://play.google.com/store/apps/details?id=com.tigertag.connect&hl=fr";
+      } else {
+        link.href = "https://apps.apple.com/fr/app/tigertag-rfid-connect/id6745437963";
       }
     }
-
-    async function handleCloseAction() {
+   
+  async function handleCloseAction() {
       if (document.fullscreenElement) {
         try {
           await document.exitFullscreen();
